@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Login Fake</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #232526, #414345);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .tela {
+      display: none;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      width: 90%;
+      max-width: 350px;
+      text-align: center;
+      animation: aparecer 0.5s ease;
+    }
+
+    .tela.ativa {
+      display: block;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 6px;
+      background-color: #1abc9c;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #16a085;
+    }
+
+    .link {
+      margin-top: 10px;
+      display: block;
+      color: #3498db;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    @keyframes aparecer {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Tela de Login -->
+  <div id="login" class="tela ativa">
+    <h2>Login</h2>
+    <input type="email" id="loginEmail" placeholder="Email">
+    <input type="password" id="loginSenha" placeholder="Senha">
+    <button onclick="fazerLogin()">Entrar</button>
+    <span class="link" onclick="trocarTela('create')">Criar Conta</span>
+  </div>
+
+  <!-- Tela de Cadastro -->
+  <div id="create" class="tela">
+    <h2>Criar Conta</h2>
+    <input type="email" id="createEmail" placeholder="Email">
+    <input type="password" id="createSenha" placeholder="Senha">
+    <button onclick="criarConta()">Registrar</button>
+    <span class="link" onclick="trocarTela('login')">Voltar ao Login</span>
+  </div>
+
+  <!-- Tela Restrita -->
+  <div id="restrita" class="tela">
+    <h2>Bem-vindo!</h2>
+    <p>Você está na área restrita.</p>
+    <button onclick="sair()">Sair</button>
+  </div>
+
+  <script>
+    // Banco de dados fake
+    const usuarios = [];
+
+    function trocarTela(telaId) {
+      document.querySelectorAll('.tela').forEach(div => div.classList.remove('ativa'));
+      document.getElementById(telaId).classList.add('ativa');
+    }
+
+    function criarConta() {
+      const email = document.getElementById('createEmail').value.trim();
+      const senha = document.getElementById('createSenha').value.trim();
+
+      if (!email || !senha) {
+        alert('Preencha todos os campos!');
+        return;
+      }
+
+      const existe = usuarios.find(user => user.email === email);
+      if (existe) {
+        alert('Email já cadastrado!');
+        return;
+      }
+
+      usuarios.push({ email, senha });
+      alert('Conta criada com sucesso!');
+      document.getElementById('createEmail').value = '';
+      document.getElementById('createSenha').value = '';
+      trocarTela('login');
+    }
+
+    function fazerLogin() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const senha = document.getElementById('loginSenha').value.trim();
+
+      const usuario = usuarios.find(user => user.email === email && user.senha === senha);
+
+      if (usuario) {
+        trocarTela('restrita');
+      } else {
+        alert('Email ou senha inválidos!');
+      }
+    }
+
+    function sair() {
+      trocarTela('login');
+    }
+  </script>
+</body>
+</html>
